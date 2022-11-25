@@ -138,7 +138,7 @@ image::integrations/09-oauth.png[OAuth 9, 800]
 image::integrations/10-oauth.png[OAuth 10, 800]
 
 [#integrate_acs_sso]
-== Integrate RHACS with Red Hat Single Sign On
+== Option Lab: Integrate RHACS with Red Hat Single Sign On
 
 The following steps will create some basic example objects to an existing RHSSO or Keycloak to test the authentication at RHACS.
 
@@ -151,6 +151,12 @@ oc new-project single-sign-on
 ----
 
 . Create the OperatorGroup for install the RHSSO operator
++
+[.console-input]
+[source,bash,subs="attributes+,+macros"]	
+----	
+oc apply -f labitem/sso-og.yaml
+----
 +
 [.console-output]
 [source,bash,subs="attributes+,+macros"]	
@@ -166,14 +172,14 @@ spec:
   targetNamespaces:
     - single-sign-on
 ----
+
+. Create the Subscription Operator for the RHSSO
 +
 [.console-input]
 [source,bash,subs="attributes+,+macros"]	
 ----	
-oc apply -f sso-og.yaml
+oc apply -f labitem/sso-subs.yaml
 ----
-
-. Create the Subscription Operator for the RHSSO
 +
 [.console-output]
 [source,bash,subs="attributes+,+macros"]	
@@ -189,14 +195,14 @@ spec:
   source: redhat-operators
   sourceNamespace: openshift-marketplace
 ----
+
+. Create an instance of Keycloak
 +
 [.console-input]
 [source,bash,subs="attributes+,+macros"]	
-----	
-oc apply -f sso-subs.yaml
 ----
-
-. Create an instance of Keycloak
+oc apply -f labitem/sso-instance.yaml
+----
 +
 [.console-output]
 [source,bash,subs="attributes+,+macros"]	
@@ -213,14 +219,14 @@ spec:
     enabled: true
   instances: 1
 ----
+
+. Create the Realm for the installation called **Basic**
 +
 [.console-input]
 [source,bash,subs="attributes+,+macros"]	
 ----
-oc apply -f sso-instance.yaml
+oc apply -f labitem/sso-realm.yaml
 ----
-
-. Create the Realm for the installation called **Basic**
 +
 [.console-output]
 [source,bash,subs="attributes+,+macros"]	
@@ -228,8 +234,10 @@ oc apply -f sso-instance.yaml
 apiVersion: keycloak.org/v1alpha1
 kind: KeycloakRealm
 metadata:
- name: rhacs-keycloakrealm
- namespace: single-sign-on
+  name: rhacs-keycloakrealm
+  namespace: single-sign-on
+  labels:
+    app: sso
 spec:
  instanceSelector:
    matchLabels:
@@ -239,12 +247,6 @@ spec:
    enabled: true
    id: basic
    realm: basic
-----
-+
-[.console-input]
-[source,bash,subs="attributes+,+macros"]	
-----
-oc apply -f sso-realm.yaml
 ----
 
 . Login into Red Hat SSO. Get the route to your RHSSO instance and log into the Administration Interface.
