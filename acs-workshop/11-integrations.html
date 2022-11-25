@@ -653,7 +653,7 @@ For example the user with the name <code>opentlc-mgr</code> gets the role Admin 
 </div>
 </div>
 <div class="sect1">
-<h2 id="integrate_acs_sso"><a class="anchor" href="#integrate_acs_sso"></a>Integrate RHACS with Red Hat Single Sign On</h2>
+<h2 id="integrate_acs_sso"><a class="anchor" href="#integrate_acs_sso"></a>Option Lab: Integrate RHACS with Red Hat Single Sign On</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The following steps will create some basic example objects to an existing RHSSO or Keycloak to test the authentication at RHACS.</p>
@@ -670,6 +670,11 @@ For example the user with the name <code>opentlc-mgr</code> gets the role Admin 
 </li>
 <li>
 <p>Create the OperatorGroup for install the RHSSO operator</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f labitem/sso-og.yaml</code></pre>
+</div>
+</div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apiVersion: operators.coreos.com/v1
@@ -684,14 +689,14 @@ spec:
     - single-sign-on</code></pre>
 </div>
 </div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f sso-og.yaml</code></pre>
-</div>
-</div>
 </li>
 <li>
 <p>Create the Subscription Operator for the RHSSO</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f labitem/sso-subs.yaml</code></pre>
+</div>
+</div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apiVersion: operators.coreos.com/v1alpha1
@@ -706,14 +711,14 @@ spec:
   sourceNamespace: openshift-marketplace</code></pre>
 </div>
 </div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f sso-subs.yaml</code></pre>
-</div>
-</div>
 </li>
 <li>
 <p>Create an instance of Keycloak</p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f labitem/sso-instance.yaml</code></pre>
+</div>
+</div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apiVersion: keycloak.org/v1alpha1
@@ -729,21 +734,23 @@ spec:
   instances: 1</code></pre>
 </div>
 </div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f sso-instance.yaml</code></pre>
-</div>
-</div>
 </li>
 <li>
 <p>Create the Realm for the installation called <strong>Basic</strong></p>
+<div class="listingblock console-input">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f labitem/sso-realm.yaml</code></pre>
+</div>
+</div>
 <div class="listingblock console-output">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">apiVersion: keycloak.org/v1alpha1
 kind: KeycloakRealm
 metadata:
- name: rhacs-keycloakrealm
- namespace: single-sign-on
+  name: rhacs-keycloakrealm
+  namespace: single-sign-on
+  labels:
+    app: sso
 spec:
  instanceSelector:
    matchLabels:
@@ -753,11 +760,6 @@ spec:
    enabled: true
    id: basic
    realm: basic</code></pre>
-</div>
-</div>
-<div class="listingblock console-input">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">oc apply -f sso-realm.yaml</code></pre>
 </div>
 </div>
 </li>
