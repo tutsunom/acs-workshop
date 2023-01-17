@@ -1,6 +1,5 @@
 * xref:01-setup.adoc[Setup]
-** xref:01-setup.adoc#prerequisite[Prerequisites]
-** xref:01-setup.adoc#prerequisite[Prerequisites]
+** xref:01-setup.adoc#prerequisite[前提]
 
 * xref:02-getting_started.adoc[Getting Started]
 ** xref:02-getting_started#install_acs_operator[Install RHACS Operator]
